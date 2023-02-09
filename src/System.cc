@@ -396,6 +396,19 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const
     return Tcw;
 }
 
+Eigen::Matrix4f System::TrackRGBD_Eigen(
+    const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> &im,
+    const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> &depthmap,
+    const double &timestamp, const vector<IMU::Point> &vImuMeas,
+    string filename) {
+  cv::Mat im_cv;
+  cv::Mat depth_cv;
+  cv::eigen2cv(im, im_cv);
+  cv::eigen2cv(depthmap, depth_cv);
+  Sophus::SE3f Tcw = TrackRGBD(im_cv, depth_cv, timestamp, vImuMeas, filename);
+  return Tcw.inverse().matrix();
+}
+
 Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, const vector<IMU::Point>& vImuMeas, string filename)
 {
 

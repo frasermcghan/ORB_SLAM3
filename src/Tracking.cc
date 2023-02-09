@@ -2783,7 +2783,10 @@ void Tracking::UpdateLastFrame()
     // Update pose according to reference keyframe
     KeyFrame* pRef = mLastFrame.mpReferenceKF;
     Sophus::SE3f Tlr = mlRelativeFramePoses.back();
-    mLastFrame.SetPose(Tlr * pRef->GetPose());
+
+    if (pRef != nullptr){
+        mLastFrame.SetPose(Tlr * pRef->GetPose());
+    }
 
     if(mnLastKeyFrameId==mLastFrame.mnId || mSensor==System::MONOCULAR || mSensor==System::IMU_MONOCULAR || !mbOnlyTracking)
         return;

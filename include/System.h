@@ -27,6 +27,8 @@
 #include<string>
 #include<thread>
 #include<opencv2/core/core.hpp>
+#include <eigen3/Eigen/Eigen>
+#include <opencv2/core/eigen.hpp>
 
 #include "Tracking.h"
 #include "FrameDrawer.h"
@@ -114,6 +116,13 @@ public:
     // Input depthmap: Float (CV_32F).
     // Returns the camera pose (empty if tracking fails).
     Sophus::SE3f TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const double &timestamp, const vector<IMU::Point>& vImuMeas = vector<IMU::Point>(), string filename="");
+    
+    // Same as above method but allows passthrough with pybind11
+    Eigen::Matrix4f TrackRGBD_Eigen(
+        const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> &im,
+        const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> &depthmap,
+        const double &timestamp, const vector<IMU::Point> &vImuMeas,
+        string filename);
 
     // Proccess the given monocular frame and optionally imu data
     // Input images: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
@@ -185,6 +194,8 @@ public:
     void ChangeDataset();
 
     float GetImageScale();
+
+    cv::Mat GetViewerFrame();
 
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
